@@ -5,8 +5,10 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     public List<Transform> patrolPoints;
+    public PlayerController player;
 
     private NavMeshAgent _navMeshAgent;
+    private bool _isPlayerNoticed;
 
     private void Start()
     {
@@ -19,6 +21,18 @@ public class EnemyAI : MonoBehaviour
     }
     private void Update()
     {
+        var direction = player.transform.position - transform.position;
+
+        RaycastHit hit;
+        if(Physics.Raycast(transform.position, direction, out hit))
+        {
+            if(hit.collider.gameObject == player.gameObject)
+            {
+
+            }
+
+        }
+
         PatrolUpdate();
     }
     private void PatrolUpdate()
