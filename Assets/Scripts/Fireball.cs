@@ -6,11 +6,13 @@ public class Fireball : MonoBehaviour
 {
     public float speed;
     public float lifetime;
+    public float damage = 10;
 
     private void Start()
     {
         Invoke("DestroyFireball", lifetime);
     }
+
     void FixedUpdate()
     {
         MoveFixedUpdate();
@@ -23,7 +25,17 @@ public class Fireball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        DestroyFireball();
+            DamageEnemy(collision);
+            DestroyFireball();        
+    }
+
+    private void DamageEnemy(Collision collision)
+    {
+        var enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
+        if (enemyHealth != null)
+        {
+            enemyHealth.DealDamage(damage);
+        }
     }
 
     private void DestroyFireball()
