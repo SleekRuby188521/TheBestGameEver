@@ -24,13 +24,23 @@ public class EnemyAI : MonoBehaviour
         var direction = player.transform.position - transform.position;
 
         RaycastHit hit;
-        if(Physics.Raycast(transform.position, direction, out hit))
+        if(Physics.Raycast(transform.position + Vector3.up, direction, out hit))
         {
             if(hit.collider.gameObject == player.gameObject)
             {
-
+                if (hit.collider.gameObject == player.gameObject)
+                {
+                    _isPlayerNoticed = true;
+                }
+                else
+                {
+                    _isPlayerNoticed = false;
+                }
             }
-
+            else
+            {
+                _isPlayerNoticed = false;
+            }
         }
 
         PatrolUpdate();
