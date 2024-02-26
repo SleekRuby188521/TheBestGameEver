@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     public List<Transform> patrolPoints;
     public PlayerController player;
+    public float viewAngle;
 
     private NavMeshAgent _navMeshAgent;
     private bool _isPlayerNoticed;
@@ -21,39 +22,46 @@ public class EnemyAI : MonoBehaviour
     }
     private void Update()
     {
+        NoticePlayerUpdate();
+        ChaseUpdate();
+        PatrolUpdate();
+    }
+    private void NoticePlayerUpdate()
+    {
         var direction = player.transform.position - transform.position;
-
-        RaycastHit hit;
-        if(Physics.Raycast(transform.position + Vector3.up, direction, out hit))
+        _isPlayerNoticed = false;
+        if (Vector3.Angle(transform.forward, direction) < viewAngle)
         {
-            if(hit.collider.gameObject == player.gameObject)
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position + Vector3.up, direction, out hit))
             {
                 if (hit.collider.gameObject == player.gameObject)
                 {
                     _isPlayerNoticed = true;
                 }
-                else
-                {
-                    _isPlayerNoticed = false;
-                }
-            }
-            else
-            {
-                _isPlayerNoticed = false;
             }
         }
-
-        PatrolUpdate();
     }
     private void PatrolUpdate()
     {
-        if (_navMeshAgent.remainingDistance == 0)
+        if (!_isPlayerNoticed)
         {
-            PickNewPatrolPoint();
+            if (_navMeshAgent.remainingDistance == 0)
+            {
+                PickNewPatrolPoint();
+            }
         }
     }
     private void PickNewPatrolPoint()
     {
         _navMeshAgent.destination = patrolPoints[Random.Range(0, patrolPoints.Count)].position;
+    }
+    private void ChaseUpdate()
+    {
+        if (_isPlayerNoticed)
+        {
+            _navMeshAgent.destination = player.transform.position;
+
+        }
     }
 }
